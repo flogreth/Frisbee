@@ -8,11 +8,11 @@ The Frisbee is a microcontroller designed for prototyping, tailored to fit our  
 ## hardware features 
 
 - [Raspberry Pi Pico W](https://www.raspberrypi.com/products/raspberry-pi-pico/) as brain. I wanted 
-- [makey makey](https://makeymakey.com/) functionality as default: crocodile clamp connectors and 2MOhms pulldown resistors 
-- BEE: A reverse mounted neopixel shines light through the expoxy layer. This allows the bee on the other side to glow in all possible colors without a recognizable component. Pure magic! The difficulty here was to remove the copper layers on both sides of the PCB at the location of the bee so the light can pass through, but to keep the soldermask and silkscreen layers on the front. I figured out that the light easyly passes the white soldermask but not the black silkscreen bee. It even gets nicely distributed (and a little yellowish) through the pcb epoxy.
+- [makey makey](https://makeymakey.com/) functionality as default: crocodile clamp connectors and 2MOhms pulldown resistors. As default code, the pi pico acts as a usb host controller and sends button inputs to your computer when circuits are being closed. 
+- BEE: A reverse mounted neopixel shines light through the expoxy layer. This allows the bee on the other side to glow in all possible colors without a recognizable component. Pure magic! The difficulty here was to remove the copper layers on both sides of the PCB at the location of the bee so the light can pass through, but to keep the soldermask and silkscreen layers on the front. I figured out that the light easyly passes the white soldermask but not the black silkscreen bee. It even gets nicely distributed (and a little yellowish) through the pcb epoxy. PLUS: The bee has a small solderpad-layer outline that works as a touch sensor. in default mode, the bee glows up yellow if you touch it. that way you can check if the frisbee is powered and the code is running.
 
   ![ezgif-76ce3407d51d02](https://github.com/user-attachments/assets/f89e12fe-dbe9-41bc-be68-54b9eb192d55)
-- L293D dual-h-bridge as motor driver and possibility to add aditional power supply
+- L293D dual-h-bridge as motor driver and possibility to add aditional power supply. 
 
 ## programming & learning
 
