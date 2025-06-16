@@ -8,7 +8,7 @@ The Frisbee is a microcontroller designed for prototyping, tailored to fit our  
 ## hardware features 
 
 - [Raspberry Pi Pico W](https://www.raspberrypi.com/products/raspberry-pi-pico/) as brain. I wanted 
-- [makey makey](https://makeymakey.com/) functionality as default: crocodile clamp connectors and 2 MOhms pull-down resistors. As default code, the Pi pico acts as an USB host controller and sends button inputs to your computer when circuits are being closed. 
+- [makey makey](https://makeymakey.com/) functionality as default: crocodile clamp connectors and 2 MOhms pull-down resistors. As default code, the Pi pico acts as an USB host controller and sends button inputs to your computer when circuits are being closed. So anything conductive can be a button for your custom made game controller. 
 - The bee: A reverse mounted neopixel shines light through the epoxy layer. This allows the bee on the other side to glow in all possible colors without a recognizable component. Pure magic! The difficulty here was to remove the copper layers on both sides of the PCB at the location of the bee, so the light can pass through, but to keep the solder mask and silkscreen layers on the front. I figured out that the light easily passes the white solder mask but not the black silkscreen bee. It even gets nicely distributed (and a little yellowish) through the PCB epoxy. PLUS: The bee has a small solderpad layer outline that works as a touch sensor. in default mode, the bee glows up yellow if you touch it. that way you can check if the frisbee is powered and the code is running.
 
   ![ezgif-76ce3407d51d02](https://github.com/user-attachments/assets/f89e12fe-dbe9-41bc-be68-54b9eb192d55)
@@ -26,3 +26,6 @@ It works great with ChatGPT; maybe someday there will be an AI agent for Thonny 
 for every relevant part that can be connected, there is a code example on the mass storage. 
 
 ### Cheat sheet
+
+we are constantly trying to update the default codes and a offline handout cheat sheet. In its frist part the cheatsheet explains basic functionality of the Frisbee. In the second part every page covers one piece of electronic that could be connected. Theres input devices like buttons, potentiometers or any kind of sensors. There's output devices like sound, motors and other actuators, or leds and displays. And there's communication & storage protocols like Serial, MQTT, MIDI, RFID. 
+Each page answers 3 questions: What does the component look like? How do I connect it to the Frisbee? And where can I find a sample code?
