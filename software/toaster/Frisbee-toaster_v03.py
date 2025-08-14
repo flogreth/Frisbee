@@ -6,7 +6,7 @@ import subprocess, os, shutil, string, threading, win32api, serial, serial.tools
 from playsound import playsound
 
 # VARIABLEN
-github_repo="https://github.com/flogreth/Frisbee/tree/main/_default_codes"
+github_repo="https://github.com/flogreth/Frisbee/tree/main/software/default_codes/frisbee_2_pi_pico_neopixel_default"
 circuitpython_list = "https://raw.githubusercontent.com/thonny/thonny/master/data/circuitpython-variants-uf2.json"
 circuitpython_link = "https://downloads.circuitpython.org/bin/raspberry_pi_pico_w/en_US/adafruit-circuitpython-raspberry_pi_pico_w-en_US-9.2.8.uf2"
 
