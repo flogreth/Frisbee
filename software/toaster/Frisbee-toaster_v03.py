@@ -9,12 +9,14 @@ import subprocess, os, shutil, string, threading, win32api, serial, serial.tools
 from playsound import playsound
 from pathlib import Path
 from urllib.parse import urlparse
+from secrets import GITHUB_TOKEN
+
 
 # VARIABLEN
 github_repo="https://github.com/flogreth/Frisbee/tree/main/software/default_codes/frisbee_3_pi_pico_w"
 circuitpython_list = "https://raw.githubusercontent.com/thonny/thonny/master/data/circuitpython-variants-uf2.json"
 circuitpython_link = "https://downloads.circuitpython.org/bin/raspberry_pi_pico_w/en_US/adafruit-circuitpython-raspberry_pi_pico_w-en_US-9.2.8.uf2"
-headers = {"Authorization": "token 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"}
+headers = {"Authorization": f"token {GITHUB_TOKEN}"}
 
 letzter_versuch = 0
 versuche = 0
@@ -22,7 +24,7 @@ repo_url = ""
 subfolder = ""
 
 # circuitpython Versions-Liste holen
-data = requests.get(circuitpython_list).json()
+data = requests.get(circuitpython_list, headers=headers).json()
 rp2_entries = [item for item in data if item.get("vendor") == "Raspberry Pi"]
 
 
@@ -75,27 +77,44 @@ def start_toast_thread():
     
     threading.Thread(target=start_toast, daemon=True).start()
 
-def download_github_folder_api(api_url, ziel):
-    
-    r = requests.get(api_url)
+def count_items(api_url):
+    r = requests.get(api_url, headers=headers)
     r.raise_for_status()
+    items = r.json()
+    total = 0
+    for item in items:
+        if item["type"] == "file":
+            total += 1
+        elif item["type"] == "dir":
+            total += count_items(item["url"])
+    return total
+
+def download_github_folder_api(api_url, ziel, total=None, progress=[0]):
+    if total is None:
+        total = count_items(api_url)
+    r = requests.get(api_url, headers=headers)
+    r.raise_for_status()
+    items = r.json()
     ziel = Path(ziel)
     ziel.mkdir(parents=True, exist_ok=True)
-
-    for item in r.json():
+    for item in items:
         if item["type"] == "file":
-            file_r = requests.get(item["download_url"])
-            log(f"copy file......{item["name"]}")
+            file_r = requests.get(item["download_url"], headers=headers)
+            progress[0] += 1
+            prozent = round((progress[0] / total) * 100, 1)
+            log_replace_last(f"copy file {progress[0]} von {total} ({prozent}%) ......{item['name']}")
             with open(ziel/item["name"], "wb") as f:
                 f.write(file_r.content)
         elif item["type"] == "dir":
-            # rekursiv Unterordner laden
-            log(f"copy directory....{item["name"]}")
-            sub_api_url = f"https://api.github.com/repos/{item['url'].split('/repos/')[1]}"
-            download_github_folder_api(item["url"], ziel/item["name"])
+            progress[0] += 1
+            prozent = round((progress[0] / total) * 100, 1)
+            log_replace_last(f"copy directory {progress[0]} von {total} ({prozent}%) ....{item['name']}")
+            download_github_folder_api(item["url"], ziel/item["name"], total=total, progress=progress)
+
 
 def start_toast():
 
+    toast_button.config(state=tk.DISABLED)
     tmp_dir = "tmp_clone"
     delete_dir(tmp_dir)
 
@@ -107,12 +126,13 @@ def start_toast():
 
     # CircuitPython herunterladen
     dateiname = os.path.join(cpy_ziel, os.path.basename(circuitpython_link))
-    response = requests.get(circuitpython_link, stream=True)
+    response = requests.get(circuitpython_link, stream=True, headers=headers)
     log(f"Downloading CircuitPython file...{dateiname}")
     with open(dateiname, 'wb') as out_file:
         shutil.copyfileobj(response.raw, out_file)
-    log("...finished")
+    log("CIRCUITPYTHON successfully installed...")
     log("Restarting microcontroller...")
+    toast_button.config(state=tk.NORMAL)
 
     max_versuche = 7
     versuche = 0
