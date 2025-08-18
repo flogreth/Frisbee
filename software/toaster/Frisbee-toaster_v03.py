@@ -16,7 +16,7 @@ from secrets import GITHUB_TOKEN
 github_repo="https://github.com/flogreth/Frisbee/tree/main/software/default_codes/frisbee_3_pi_pico_w"
 circuitpython_list = "https://raw.githubusercontent.com/thonny/thonny/master/data/circuitpython-variants-uf2.json"
 circuitpython_link = "https://downloads.circuitpython.org/bin/raspberry_pi_pico_w/en_US/adafruit-circuitpython-raspberry_pi_pico_w-en_US-9.2.8.uf2"
-headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+headers = {"Authorization": f"token {GITHUB_TOKEN}"} #from separate secrets file
 
 letzter_versuch = 0
 versuche = 0
