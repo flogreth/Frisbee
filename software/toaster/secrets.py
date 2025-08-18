@@ -1,1 +1,1 @@
-GITHUB_TOKEN = "xxx_xxxxxxxxxxxxxxxxxxx"
+GITHUB_TOKEN = "test"
