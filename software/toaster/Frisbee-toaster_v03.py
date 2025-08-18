@@ -16,7 +16,9 @@ from secrets import GITHUB_TOKEN
 github_repo="https://github.com/flogreth/Frisbee/tree/main/software/default_codes/frisbee_3_pi_pico_w"
 circuitpython_list = "https://raw.githubusercontent.com/thonny/thonny/master/data/circuitpython-variants-uf2.json"
 circuitpython_link = "https://downloads.circuitpython.org/bin/raspberry_pi_pico_w/en_US/adafruit-circuitpython-raspberry_pi_pico_w-en_US-9.2.8.uf2"
-headers = {"Authorization": f"token {GITHUB_TOKEN}"} #from separate secrets file
+headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+
+print(headers)
 
 letzter_versuch = 0
 versuche = 0
@@ -24,7 +26,7 @@ repo_url = ""
 subfolder = ""
 
 # circuitpython Versions-Liste holen
-data = requests.get(circuitpython_list, headers=headers).json()
+data = requests.get(circuitpython_list).json()
 rp2_entries = [item for item in data if item.get("vendor") == "Raspberry Pi"]
 
 
