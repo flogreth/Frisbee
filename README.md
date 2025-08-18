@@ -24,3 +24,15 @@ It works great with ChatGPT; maybe someday there will be an AI agent for Thonny 
 ### examples and default code
 
 for every relevant part that can be connected, there is a code example on the mass storage. 
+
+### Chatbot
+
+I made a html with a chatbot conneted to [Chatbase](https://www.chatbase.co/), an ai agent that i trained with all infos around the frisbee. There's limited amount of tokens for the free version, so I change the API key every now and then and buy some more tokens for larger workshops if neccessary..
+
+### Resetting the Frisbee (Toasting)
+
+Resetting the frisbee means: installing a matching version of circuitpython, deleting all old files and cloning the repository with default codes to the frisbee.
+There is a little script for that
+
+<img width="1125" height="616" alt="image" src="https://github.com/user-attachments/assets/99cbcbdd-71a4-41b1-ac34-cc6cd9a662e9" />
+
