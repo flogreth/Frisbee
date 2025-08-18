@@ -2,13 +2,12 @@
 #     tested with tinkertanks frisbee    #
 
 import time, board, neopixel, colorsys
-num_pixels = 24
-pixels = neopixel.NeoPixel(board.GP12 , num_pixels, brightness=0.2, auto_write=False)
+num_pixels = 1
+pixels = neopixel.NeoPixel(board.GP14 , num_pixels, brightness=1, auto_write=False)
 
 while True:
-    for i in range(100):
-        print(colorsys.hsv_to_rgb(0.5, 1, 0.1))
-        
-        pixels.fill( colorsys.hsv_to_rgb(0.5, 1, 0.1) )
+    for hue in range(100):
+        pixels.fill( colorsys.hsv_to_rgb(hue*0.01, 1, 0.5) )
         pixels.show()
-        time.sleep(0.1)
+        #print(hue/100)
+        time.sleep(0.08)

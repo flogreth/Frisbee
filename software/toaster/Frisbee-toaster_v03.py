@@ -1,14 +1,20 @@
+# to make an executable file type:
+# python -m PyInstaller --onefile --noconsole Frisbee-toaster_v03.py
+
 import json, requests, sys, time, webbrowser, stat
 import tkinter as tk
 from tkinter import filedialog, scrolledtext, messagebox
 from tkinter import ttk
 import subprocess, os, shutil, string, threading, win32api, serial, serial.tools.list_ports
 from playsound import playsound
+from pathlib import Path
+from urllib.parse import urlparse
 
 # VARIABLEN
-github_repo="https://github.com/flogreth/Frisbee/tree/main/software/default_codes/frisbee_2_pi_pico_neopixel_default"
+github_repo="https://github.com/flogreth/Frisbee/tree/main/software/default_codes/frisbee_3_pi_pico_w"
 circuitpython_list = "https://raw.githubusercontent.com/thonny/thonny/master/data/circuitpython-variants-uf2.json"
 circuitpython_link = "https://downloads.circuitpython.org/bin/raspberry_pi_pico_w/en_US/adafruit-circuitpython-raspberry_pi_pico_w-en_US-9.2.8.uf2"
+headers = {"Authorization": "token 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"}
 
 letzter_versuch = 0
 versuche = 0
@@ -42,18 +48,18 @@ def find_device(devicename):
             pass
     return None
 
-def parse_github_url(url):
-    global subfolder, repo_url
-    """Wandelt einen GitHub-Browser-Link in Repo-URL + Subfolder um"""
-    if "/tree/" not in url:
-        raise ValueError("URL muss '/tree/' enthalten")
-    parts = url.split("/tree/")
-    repo_url = parts[0] + ".git"
-    after_tree = parts[1].split("/", 1)
-    if len(after_tree) < 2:
-        raise ValueError("Kein Subfolder in der URL gefunden")
-    subfolder = after_tree[1]
-    return repo_url, subfolder
+def github_url_to_api(url):
+    parsed = urlparse(url)
+    parts = parsed.path.strip("/").split("/")
+    if "tree" in parts:
+        tree_idx = parts.index("tree")
+        repo = "/".join(parts[:2])
+        branch = parts[tree_idx + 1]
+        folder_path = "/".join(parts[tree_idx + 2:])
+        api_url = f"https://api.github.com/repos/{repo}/contents/{folder_path}?ref={branch}"
+        return api_url
+    else:
+        raise ValueError("URL muss /tree/ enthalten.")
 
 def delete_dir(directory):
     if os.path.exists(directory):
@@ -65,9 +71,28 @@ def handle_remove_readonly(func, path, excinfo):
 
 def start_toast_thread():
     empty_log()
-    log("let the toasting begin")
+    log("let the toasting begin...")
     
     threading.Thread(target=start_toast, daemon=True).start()
+
+def download_github_folder_api(api_url, ziel):
+    
+    r = requests.get(api_url)
+    r.raise_for_status()
+    ziel = Path(ziel)
+    ziel.mkdir(parents=True, exist_ok=True)
+
+    for item in r.json():
+        if item["type"] == "file":
+            file_r = requests.get(item["download_url"])
+            log(f"copy file......{item["name"]}")
+            with open(ziel/item["name"], "wb") as f:
+                f.write(file_r.content)
+        elif item["type"] == "dir":
+            # rekursiv Unterordner laden
+            log(f"copy directory....{item["name"]}")
+            sub_api_url = f"https://api.github.com/repos/{item['url'].split('/repos/')[1]}"
+            download_github_folder_api(item["url"], ziel/item["name"])
 
 def start_toast():
 
@@ -77,11 +102,10 @@ def start_toast():
     # CircuitPython-Ziel finden
     cpy_ziel = find_device("RPI-RP2")
     if not cpy_ziel:
-        log("Device 'RPI-RP2' nicht gefunden. Bootloader-Button gedrückt!?")
+        log("Device 'RPI-RP2' not found. Did you push the bootloader button!?")
         return
 
     # CircuitPython herunterladen
-    
     dateiname = os.path.join(cpy_ziel, os.path.basename(circuitpython_link))
     response = requests.get(circuitpython_link, stream=True)
     log(f"Downloading CircuitPython file...{dateiname}")
@@ -90,48 +114,31 @@ def start_toast():
     log("...finished")
     log("Restarting microcontroller...")
 
-    parse_github_url(github_repo)
-
-    max_versuche = 5
+    max_versuche = 7
     versuche = 0
     while versuche < max_versuche:
         ziel = find_device("CIRCUITPY")
         if ziel:
-            log("Device 'CIRCUITPY' gefunden!")
-            
             # Zielordner leeren
-            log("Alle Dateien löschen...")
-            for item in os.listdir(ziel):
+            files = os.listdir(ziel)
+            total = len(files)
+            for i, item in enumerate(files, start=1):
                 pfad = os.path.join(ziel, item)
                 try:
+                    percent = int((i / total) * 100)
+                    log_replace_last(f"deleting old files... {percent}% ({i}/{total})")
                     if os.path.isfile(pfad) or os.path.islink(pfad):
                         os.unlink(pfad)
                     else:
                         shutil.rmtree(pfad)
                 except Exception as e:
-                    log(f"Fehler beim Löschen: {e}")
+                    log(f"Error while deleting: {e}")
 
+            
+            api_url = github_url_to_api(github_repo)
             # Repo klonen
-            log(f"Cloning {repo_url}, folder: {subfolder}")
-            subprocess.run(["git", "clone", "--depth", "1", "--filter=blob:none", "--sparse", repo_url, tmp_dir])
-            subprocess.run(["git", "-C", tmp_dir, "sparse-checkout", "set", subfolder])
-
-            full_subfolder = os.path.join(tmp_dir, subfolder)
-            if not os.path.exists(full_subfolder):
-                log(f"Fehler: Subfolder '{subfolder}' existiert nicht im geklonten Repo!")
-                shutil.rmtree(tmp_dir, ignore_errors=True)
-                return
-
-            # Dateien kopieren
-            all_files = [os.path.join(r, f) for r, _, fs in os.walk(full_subfolder) for f in fs]
-            total = len(all_files)
-
-            for i, src in enumerate(all_files, 1):
-                dst = os.path.join(ziel, os.path.relpath(src, full_subfolder))
-                os.makedirs(os.path.dirname(dst), exist_ok=True)
-                shutil.copy2(src, dst)
-                log(f"{i}/{total} {os.path.basename(src)}")
-            shutil.rmtree(tmp_dir, ignore_errors=True)
+            log(f"Cloning {api_url}")
+            download_github_folder_api(api_url, ziel)
 
             log("Sucessfully toasted!")
 
@@ -144,12 +151,17 @@ def start_toast():
             log(".")
             time.sleep(2)
     else:
-        log("Nicht gefunden nach 5 Versuchen.")
+        log("not found after 7 tries.. I give up )")
 
 
 
 def log(text):
     log_box.insert(tk.END, text + "\n")
+    log_box.see(tk.END)
+
+def log_replace_last(text):
+    log_box.delete("end-2l", "end-1l")  # letzte Zeile löschen
+    log_box.insert("end-1l", text + "\n")  # neue Zeile einfügen
     log_box.see(tk.END)
 
 def empty_log():
@@ -179,7 +191,7 @@ def set_circuitpy_url(event):
                     
                     circuitpython_link = v['url']
                     empty_log()
-                    log("circuitpython downloadlink gefunden:")
+                    log("matching circuitpython UF2 file found:")
                     log(" ")
                     log(circuitpython_link)
                     break
@@ -196,7 +208,7 @@ def check_device():
     root.after(1000, check_device)  # alle 1 Sekunde prüfen
 
 root = tk.Tk()
-root.geometry("680x600")
+root.geometry("800x600")
 root.title("Frisbee Toaster 2.0")
 
 # Erste Auswahl: Board
@@ -217,7 +229,7 @@ version_dropdown.bind("<<ComboboxSelected>>", set_circuitpy_url)
 
 # GitHub URL
 tk.Label(root, text="GitHub-URL:").grid(row=2, column=0, sticky="e", padx=5, pady=5)
-url_entry = tk.Entry(root, width=80, justify="left")
+url_entry = tk.Entry(root, width=100, justify="left")
 url_entry.grid(row=2, column=1, padx=5, pady=5)
 url_entry.insert(0, github_repo)
 

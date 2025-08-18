@@ -1,31 +1,22 @@
-import time, board, adafruit_hcsr04, digitalio, pwmio
-from adafruit_motor import motor
+##   ------ NEOPIXEL HSV to RGB ------  ##
+#     tested with tinkertanks frisbee    #
 
-sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.GP12, echo_pin=board.GP13)
-# OUTPUT 1
-M1_A = board.GP0
-M1_B = board.GP1
-motor1 = motor.DCMotor(pwmio.PWMOut(M1_A, frequency=50), pwmio.PWMOut(M1_B, frequency=50))
+import time, board, neopixel, colorsys, touchio
+num_pixels = 1
+pixels = neopixel.NeoPixel(board.GP14 , num_pixels, brightness=1, auto_write=False)
 
+#touch
+touch = touchio.TouchIn(board.GP6)
+touch.threshold = 2000
 
+hue = 0
 
 while True:
-    try:
-        print((sonar.distance,))
+    if touch.value:
+        print(hue)
+        hue += 0.01
+
+    pixels.fill( colorsys.hsv_to_rgb(hue, 1, 0.5) )
+    pixels.show()
+    time.sleep(0.02)
         
-        if sonar.distance < 10:
-                print ("!!!")
-                motor1.throttle = -1
-                time.sleep(2)
-                motor1.throttle = 1
-                time.sleep(2)
-                motor1.throttle = 0
-                
-    except RuntimeError:
-        print("Retrying!")
-    time.sleep(0.1)
-    
-    
-        
-    
-    
