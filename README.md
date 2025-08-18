@@ -33,3 +33,6 @@ I made a html with a chatbot conneted to [Chatbase](https://www.chatbase.co/), a
 
 Resetting the frisbee means: installing a matching version of circuitpython, deleting all old files and cloning the repository with default codes to the frisbee.
 There is a little script for that
+
+<img width="1125" height="616" alt="image" src="https://github.com/user-attachments/assets/99cbcbdd-71a4-41b1-ac34-cc6cd9a662e9" />
+
