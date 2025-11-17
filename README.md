@@ -20,7 +20,7 @@ The Frisbee hardware design files are licensed under the CERN-OHL-S v2. You are 
 Any distributed modifications must also be released as open hardware under the same license (CERN-OHL-S). Have fun experimenting, tinkering, and creating new inventions with the Frisbee!
 There's GERBER files in the "hardware" folder, as well as easyeda editor project here:
 
-[EasyEDA Project](https://oshwlab.com/tinkertank/frisbee3-0_copy)
+[EasyEDA Project](https://oshwlab.com/tinkertank/frisbee3-0_copy) / 
 [EasyEDA Editor Files](https://easyeda.com/editor#project_id=664e8a73dbb34508851e853d00d316d7)
 
 
