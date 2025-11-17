@@ -14,6 +14,17 @@ The Frisbee is a microcontroller designed for prototyping, tailored to fit our  
   ![ezgif-76ce3407d51d02](https://github.com/user-attachments/assets/f89e12fe-dbe9-41bc-be68-54b9eb192d55)
 - L293D dual-h-bridge as motor driver and possibility to add additional power supply. 
 
+## make your own
+
+The Frisbee hardware design files are licensed under the CERN-OHL-S v2. You are warmly invited to **share, copy, modify, and build upon this project**. Please **preserve my attribution and copyright notice** in all copies and modified versions.  
+Any distributed modifications must also be released as open hardware under the same license (CERN-OHL-S). Have fun experimenting, tinkering, and creating new inventions with the Frisbee!
+There's GERBER files in the "hardware" folder, as well as easyeda editor project here:
+
+[EasyEDA Project](https://oshwlab.com/tinkertank/frisbee3-0_copy)
+[EasyEDA Editor Files](https://easyeda.com/editor#project_id=664e8a73dbb34508851e853d00d316d7)
+
+
+
 ## Programming & Learning
 
 ### software
