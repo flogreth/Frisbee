@@ -8,8 +8,9 @@ pin.direction = digitalio.Direction.OUTPUT 		# Pin auf Output setzen
 
 while True:
     pin.value = True
-    time.sleep(1)
+
     print("on")
+    time.sleep(1)
     
     pin.value = False
     time.sleep(1)
