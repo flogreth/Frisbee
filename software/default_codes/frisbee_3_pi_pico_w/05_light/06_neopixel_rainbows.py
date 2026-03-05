@@ -10,9 +10,9 @@ from adafruit_led_animation.animation.rainbowsparkle import RainbowSparkle
 from adafruit_led_animation.sequence import AnimationSequence
 
 # Update to match the pin connected to your NeoPixels
-pixel_pin = board.GP13
+pixel_pin = board.GP10
 # Update to match the number of NeoPixels you have connected
-pixel_num = 256
+pixel_num = 512
 
 pixels = neopixel.NeoPixel(pixel_pin, pixel_num, brightness=0.5, auto_write=False)
 

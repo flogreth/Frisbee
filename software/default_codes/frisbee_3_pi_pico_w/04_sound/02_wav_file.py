@@ -3,8 +3,8 @@
 
 import board, audiocore, audiopwmio
 
-audio = audiopwmio.PWMAudioOut(board.GP4)					#Lautsprecher an Pin GP4 (D4)
-wavfile = audiocore.WaveFile(open("04_sound/miau.wav", "rb"))
+audio = audiopwmio.PWMAudioOut(board.GP1)					#Lautsprecher an Pin GP4 (D4)
+wavfile = audiocore.WaveFile(open("miau.wav", "rb"))
 
 audio.play(wavfile) 										#spielt die wav file ab
 

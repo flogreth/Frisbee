@@ -9,8 +9,14 @@ poti=analogio.AnalogIn(board.GP27) 						# GP26=A0, GP27=A1 , GP28=A2
 #SIMPLE:
 
 while True:
-    print( int(map_range(poti.value, 0, 2**16, 0, 101)) )		# umrechnung z.B. auf 0 bis 180
+    #Umrechnung auf Prozent:
+    prozent = int(map_range(poti.value, 0, 2**16, 0, 101)) # umrechnung z.B. auf 0 bis 180
+    print("raw:",poti.value,"umgerechnet:",prozent) 
     time.sleep(0.1)
+
+
+
+
 
 # BEISPIELE:
 

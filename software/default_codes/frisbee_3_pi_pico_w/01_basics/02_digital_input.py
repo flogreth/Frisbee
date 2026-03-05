@@ -3,7 +3,7 @@
 
 import time, board, digitalio
 
-button = digitalio.DigitalInOut(board.GP12)
+button = digitalio.DigitalInOut(board.GP13)
 button.direction = digitalio.Direction.INPUT
 button.pull = digitalio.Pull.DOWN
 

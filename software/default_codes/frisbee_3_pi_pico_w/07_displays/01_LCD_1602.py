@@ -1,7 +1,7 @@
 ## --------  LED (Digital Output)  ------- ##
 #      tested with tinkertanks frisbee      #
 
-# easy use with I2C Backback HW-61
+# easy use with I2C Backback HW-61 
 
 import board, busio
 from lcd.lcd import LCD

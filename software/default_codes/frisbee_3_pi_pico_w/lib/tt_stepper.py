@@ -1,11 +1,6 @@
-#28byj-48 Library
-
+#28byj-48 Library by flogreth
 # stepper.py
-import board
-import time
-import digitalio
-
-
+import board, time, digitalio
 
 class Stepper:
     
@@ -14,9 +9,9 @@ class Stepper:
     acceleration = 0
 
     pin1 = digitalio.DigitalInOut(board.GP0)
-    pin2 = digitalio.DigitalInOut(board.GP1)
-    pin3 = digitalio.DigitalInOut(board.GP3)
-    pin4 = digitalio.DigitalInOut(board.GP4)
+    pin2 = digitalio.DigitalInOut(board.GP4)
+    pin3 = digitalio.DigitalInOut(board.GP1)
+    pin4 = digitalio.DigitalInOut(board.GP3)
     pin1.direction = digitalio.Direction.OUTPUT
     pin2.direction = digitalio.Direction.OUTPUT
     pin3.direction = digitalio.Direction.OUTPUT
@@ -60,6 +55,3 @@ class Stepper:
 
     def set_position(self, set_pos):
         self.position = set_pos
-
-         
-        
